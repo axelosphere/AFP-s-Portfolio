@@ -337,7 +337,7 @@
                 return { id: tab.id, top: el ? el.getBoundingClientRect().top : Infinity };
                 });
 
-                const atBottom = winScroll + window.innerHeight >= document.documentElement.scrollHeight - 5;
+                const atBottom = winScroll + window.innerHeight >= document.documentElement.scrollHeight - 50;
                 if (atBottom) {
                 this.active = this.tabs.at(-1).id;
                 } else {
