@@ -199,8 +199,17 @@
             },
         init() {
             this.observer = new IntersectionObserver((entries) => {
-                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-            }, { threshold: 0.1 });
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                    const el = e.target;
+                    const delay = parseFloat(el.style.transitionDelay) || 0;
+                    setTimeout(() => {
+                        el.style.transitionDelay = '0s';
+                    }, (delay + 1.2) * 1000); // wait for delay + animation duration to finish
+                    el.classList.add('visible');
+                    }
+                });
+                }, { threshold: 0.1 });
 
             this.$nextTick(() => {
                 setTimeout(() => {
