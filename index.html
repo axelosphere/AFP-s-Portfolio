@@ -194,7 +194,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
           <h2 class="text-3xl font-bold italic">Featured Projects</h2>
           <div class="flex gap-2 bg-zinc-900 p-1 rounded-xl border border-white/5">
-            <template x-for="cat in ['All', 'Web', 'AI']">
+            <template x-for="cat in ['All', 'Web', 'AI', 'IoT']">
                 <button @click="filter = cat; $nextTick(() => reobserve())" 
                         :class="filter === cat ? 'bg-zinc-800 text-white' : 'text-zinc-500'"
                         class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all" 
