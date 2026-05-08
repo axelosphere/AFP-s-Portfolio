@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Axelmin Pines | Portfolio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    .glow-card:hover {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Animation for revealing sections */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 1.2s ease-out; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Animated Gradient Text */
+    .gradient-text {
+      background: linear-gradient(to right, #ffffff, #a1a1aa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 selection:bg-white selection:text-black" x-data="portfolio()">
+
+  <div class="fixed top-0 left-0 h-1 bg-white z-[60] transition-all duration-150" :style="'width: ' + scrollPercent + '%'"></div>
+
+  <nav class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+    <div class="flex items-center gap-1 bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-full p-1.5 shadow-2xl overflow-x-auto max-w-[95vw]">
+      <template x-for="tab in tabs" :key="tab.id">
+        <a :href="'#' + tab.id"
+           @click="active = tab.id"
+           :class="active === tab.id ? 'bg-white text-black' : 'text-zinc-400 hover:text-white'"
+           class="px-4 py-2 rounded-full text-xs md:text-sm font-semibold transition-all duration-300"
+           x-text="tab.label"></a>
+      </template>
+    </div>
+  </nav>
+
+  <main>
+    <section id="about" class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+      <div class="max-w-4xl reveal">
+        <span class="inline-block px-3 py-1 mb-6 text-xs font-bold tracking-widest uppercase bg-white/10 border border-white/20 rounded-full">
+            Available for Work
+        </span>
+        <h1 class="text-4xl md:text-8xl font-extrabold tracking-tighter mb-6 gradient-text">
+          Axelmin F. Pines
+        </h1>
+        <p class="text-lg md:text-xl text-zinc-400 leading-relaxed max-w-2xl mx-auto">
+          Full-Stack Developer & AI Enthusiast <span class="text-white">specializing in PHP, and the PERN stack</span>. Demonstrated expertise in 
+          <span class="text-white">integrating IoT hardware with Computer Vision (YOLO)</span> to solve real-world problems. Committed to building scalable, high-performance web applications.
+        </p>
+        <div class="mt-10 flex gap-4 justify-center">
+          <a href="#projects" class="px-8 py-3 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform">View Work</a>
+          <a href="mailto:axelminpines04@gmail.com" class="px-8 py-3 border border-white/10 font-bold rounded-full hover:bg-white/5 transition-colors">Contact</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="py-24 px-6 bg-zinc-900/30">
+      <div class="reveal max-w-5xl mx-auto">
+        <h2 class="text-3xl font-bold mb-16 text-center">Core Stack</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <template x-for="skill in skills" :key="skill.name">
+            <div class="reveal glow-card bg-zinc-900 border border-white/5 p-8 rounded-3xl text-center transition-all" :style="`transition-delay: ${skills.indexOf(skill) * 0.15}s`">
+              <img :src="skill.icon" :alt="skill.name" class="w-10 h-10 mx-auto mb-4 object-contain" />
+              <p class="font-bold text-sm tracking-wide uppercase" x-text="skill.name"></p>
+            </div>
+          </template>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="py-24 px-6">
+      <div class="reveal max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
+          <h2 class="text-3xl font-bold italic">Featured Projects</h2>
+          <div class="flex gap-2 bg-zinc-900 p-1 rounded-xl border border-white/5">
+            <template x-for="cat in ['All', 'Web', 'AI']">
+                <button @click="filter = cat; $nextTick(() => reobserve())" 
+                        :class="filter === cat ? 'bg-zinc-800 text-white' : 'text-zinc-500'"
+                        class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all" 
+                        x-text="cat"></button>
+            </template>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <template x-for="project in filteredProjects" :key="project.title">
+            <div class="reveal glow-card group bg-zinc-900 border border-white/5 rounded-[2rem] overflow-hidden flex flex-col transition-all" :style="`transition-delay: ${filteredProjects.indexOf(project) * 0.15}s`">
+                <div class="h-48 bg-zinc-800 relative overflow-hidden">
+                    <img :src="project.image" :alt="project.title" 
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent opacity-60"></div>
+                </div>
+              <div class="p-8 flex-grow">
+                <div class="flex justify-between items-start mb-4">
+                  <h3 class="text-2xl font-bold tracking-tight" x-text="project.title"></h3>
+                  <span class="text-[10px] font-black px-2 py-1 bg-white/10 rounded uppercase tracking-widest" x-text="project.category"></span>
+                </div>
+                <p class="text-zinc-400 text-sm mb-6 leading-relaxed" x-text="project.desc"></p>
+                <div class="flex flex-wrap gap-2 mb-8">
+                  <template x-for="tag in project.tags">
+                    <span class="text-[10px] font-bold text-zinc-500" x-text="'#' + tag"></span>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </section>
+
+    <section id="social" class="py-32 px-6 text-center">
+      <h2 class="reveal text-4xl md:text-6xl font-extrabold mb-12 tracking-tighter">Build with me.</h2>
+      <div class="reveal flex flex-col sm:flex-row justify-center items-center gap-4">
+        <a href="https://www.facebook.com/axelmin.pines" target="_blank" 
+            class="px-6 py-3 bg-white/5 border border-white/10 rounded-full hover:opacity-60 transition-opacity">
+            Facebook
+        </a>
+        <a href="https://github.com/axelosphere" target="_blank" 
+            class="px-6 py-3 bg-white/5 border border-white/10 rounded-full hover:opacity-60 transition-opacity">
+            GitHub
+        </a>
+        <a href="https://linkedin.com/in/axelmin-pines-861240297" target="_blank" 
+            class="px-6 py-3 bg-white/5 border border-white/10 rounded-full hover:opacity-60 transition-opacity">
+            LinkedIn
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function portfolio() {
+      return {
+        active: 'about',
+        filter: 'All',
+        scrollPercent: 0,
+        tabs: [
+          { id: 'about', label: 'About' },
+          { id: 'skills', label: 'Skills' },
+          { id: 'projects', label: 'Projects' },
+          { id: 'social', label: 'Connect' }
+        ],
+        skills: [
+            { name: 'CSS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg' },
+            { name: 'HTML', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg' },
+            { name: 'React', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+            { name: 'Tailwind CSS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg' },
+            { name: 'Bootstrap', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg' },
+            { name: 'Laravel', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg' },
+            { name: 'PHP', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg' },
+            { name: 'Python', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
+            { name: 'MySQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
+            { name: 'PostgreSQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg' },
+        ],
+        projects: [
+          { 
+            title: 'DocTrac - Document Management System', 
+            image: 'img/doctrac.png',
+            category: 'Web', 
+            tags:   ['React', 'Node.js', 'Express', 'Docker', 'PostgreSQL', 'E-Sig'], 
+            desc:   [
+                    'Architected and containerized a full-stack Document Management System (PERN) to centralize corporate file tracking.',
+                    'Integrated E-Signature functionality and implemented role-based access control for secure document handling.'
+                    ].join(' '),    
+            link: '#' 
+          },
+          { 
+            title: 'E-Repel - Avian Deterrence System',
+            image: 'img/erepel.png',
+            category: ['AI', 'Web', 'IoT'],
+            tags: ['Python', 'YOLO', 'TensorFlow', 'PHP', 'Node.js'], 
+            desc: 'IOT-Based Bird Deterrent for Fish Farms using Computer Vision and Trend Analytics.',
+            link: '#' 
+          }
+        ],
+        get filteredProjects() {
+          if (this.filter === 'All') return this.projects;
+          return this.projects.filter(p => p.category.includes(this.filter));
+        },
+        reobserve() {
+            document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+                this.observer.observe(el);
+            });
+            },
+        init() {
+            this.observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+            }, { threshold: 0.1 });
+
+            this.$nextTick(() => {
+                setTimeout(() => {
+                document.querySelectorAll('.reveal').forEach(el => this.observer.observe(el));
+                }, 50);
+            });
+
+            // Scroll: progress bar + active tab tracking
+            window.addEventListener('scroll', () => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                this.scrollPercent = (winScroll / height) * 100;
+
+                const offsets = this.tabs.map(tab => {
+                const el = document.getElementById(tab.id);
+                return { id: tab.id, top: el ? el.getBoundingClientRect().top : Infinity };
+                });
+
+                const atBottom = winScroll + window.innerHeight >= document.documentElement.scrollHeight - 5;
+                if (atBottom) {
+                this.active = this.tabs.at(-1).id;
+                } else {
+                const current = offsets.filter(o => o.top <= 100).at(-1);
+                if (current) this.active = current.id;
+                }
+            });
+            }
+      }
+    }
+  </script>
+</body>
+</html>
